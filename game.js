@@ -10,8 +10,8 @@ var Game = {
     preload : function() {
         // Here we load all the needed resources for the level.
         // In our case, that's just two squares - one for the snake body and one for the apple.
-        game.load.image('asteroid', './assets/images/snake.png');
-        game.load.image('cat', './assets/images/apple.png');
+        game.load.image('asteroid', './assets/images/a10000.png');
+        game.load.image('cat', './assets/images/uglyCat.png');
     },
 
     create : function() {
@@ -19,7 +19,7 @@ var Game = {
         catSize = 1;
         asteroids = [];
         accumulateSize = 0;
-        game.stage.backgroundColor = '#FF00FF';
+        game.stage.('cat', './assets/images/apple.png');
         this.generateAsteroids();
         this.generateCat();
         game.add.text(30, 20, "SCORE", textStyle_Key);
