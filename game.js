@@ -2,7 +2,7 @@
  * Created by user on 2015-07-31.
  */
 var snake, apple, catSize, score, speed, squareSize,
-    updateDelay, direction, new_direction,
+    updateDelay, direction, new_direction, cat,
     addNew, cursors, scoreTextValue, speedTextValue, textStyle_Key, textStyle_Value;
 
 var Game = {
@@ -12,14 +12,17 @@ var Game = {
         // In our case, that's just two squares - one for the snake body and one for the apple.
         game.load.image('asteroid', './assets/images/a10000.png');
         game.load.image('cat', './assets/images/uglyCat.png');
+        game.load.image("background", "./assets/images/space6.jpg");
     },
 
     create : function() {
         cat = {};
+
         catSize = 1;
         asteroids = [];
         accumulateSize = 0;
-        game.stage.('cat', './assets/images/apple.png');
+        game.stage.backgroundColor = '#71c5cf';
+        game.add.tileSprite(0,0,1000,600,'background');
         this.generateAsteroids();
         this.generateCat();
         game.add.text(30, 20, "SCORE", textStyle_Key);
@@ -29,10 +32,12 @@ var Game = {
     generateCat : function () {
         // X is between 0 and 585 (39*15)
         // Y is between 0 and 435 (29*15)
-      var posX = Math.floor(272),
-          poxY = Math.floor(200);
-        //add a new cat
-        cat = game.add.sprite(posX, posY, 'cat')
+      var posY = game.height/2,
+          posX = game.width/2;
+        console.log(posY, posX);
+        //add a new catgame.world.x = canvas.width/2;
+        cat = game.add.sprite(posX, posY, 'cat');
+        cat.anchor.setTo(0.5, 0.5);
     },
 
     generateAsteroids : function () {
