@@ -19,6 +19,11 @@ var Game = {
         catSize = 1;
         asteroids = [];
         accumulateSize = 0;
+        game.stage.backgroundColor = '#FF00FF';
+        this.generateAsteroids();
+        this.generateCat();
+        game.add.text(30, 20, "SCORE", textStyle_Key);
+        scoreTextValue = game.add.text(90, 18, score.toString(), textStyle_Value);
     },
 
     generateCat : function () {
