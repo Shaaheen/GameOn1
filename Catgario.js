@@ -1,10 +1,13 @@
 /**
  * Created by user on 2015-07-31.
  */
-// Create the canvas
-var canvas = document.createElement("canvas");
-var ctx = canvas.getContext("2d");
-canvas.width = 512;
-canvas.height = 480;
-document.body.appendChild(canvas);
+var game;
 
+game = new Phaser.Game(600, 450, Phaser.AUTO, '');
+
+game.state.add('Menu', Menu);
+game.state.add('Game', Game);
+game.state.add('Game_Over', Game_Over);
+
+
+game.state.start('Menu');

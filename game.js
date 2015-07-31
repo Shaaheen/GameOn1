@@ -10,8 +10,8 @@ var Game = {
     preload : function() {
         // Here we load all the needed resources for the level.
         // In our case, that's just two squares - one for the snake body and one for the apple.
-        game.load.image('snake', './assets/images/snake.png');
-        game.load.image('apple', './assets/images/apple.png');
+        game.load.image('asteroid', './assets/images/snake.png');
+        game.load.image('cat', './assets/images/apple.png');
     },
 
     create : function() {
@@ -26,6 +26,8 @@ var Game = {
         // Y is between 0 and 435 (29*15)
       var posX = Math.floor(272),
           poxY = Math.floor(200);
+        //add a new cat
+        cat = game.add.sprite(posX, posY, 'cat')
     },
 
     generateAsteroids : function () {
