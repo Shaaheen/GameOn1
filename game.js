@@ -26,11 +26,16 @@ var Game = {
         this.generateAsteroids();
         //this.generateCat();
         game.add.text(30, 20, "SCORE", textStyle_Key);
+        game.physics.startSystem(Phaser.Physics.ARCADE);
 
         this.game.add.existing(
             new Follower(this.game, this.game.width/2, this.game.height/2, this.game.input)
         );
         //scoreTextValue = game.add.text(90, 18, score.toString(), textStyle_Value);
+    },
+
+    update :function(){
+        cat.rotation = game.physics.arcade.angleToPointer(cat);
     },
 
     generateCat : function () {
@@ -89,6 +94,7 @@ Follower.prototype.update = function() {
     if (distance > this.MIN_DISTANCE) {
         // Calculate the angle to the target
         var rotation = this.game.math.angleBetween(this.x, this.y, this.target.x, this.target.y);
+        this.rotation = game.physics.arcade.angleToPointer(this);
 
         // Calculate velocity vector based on rotation and this.MAX_SPEED
         this.body.velocity.x = Math.cos(rotation) * this.MAX_SPEED;
