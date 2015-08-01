@@ -64,8 +64,8 @@ var Game = {
     generateAsteroids : function () {
         // Make random asteroids of different sizes in random positions
         asteroids = game.add.physicsGroup(Phaser.Physics.ARCADE);
-        for(var i = 0; i < game.rnd.integerInRange(2,10); i++){
-            var s = asteroids.create(game.rnd.integerInRange(200, 0), game.rnd.integerInRange(200, 0), 'asteroid');
+        for(var i = 0; i <  10; i++){
+            var s = asteroids.create(0, game.rnd.integerInRange(200, 0), 'asteroid');
             var size = game.rnd.integerInRange(1,10)*0.1;
             s.scale.setTo(size,size);
             s.body.velocity.set(game.rnd.integerInRange(-200, 200), game.rnd.integerInRange(-200, 200));
@@ -91,6 +91,7 @@ var Follower = function(game, x, y, target) {
 };
 Follower.prototype = Object.create(Phaser.Sprite.prototype);
 Follower.prototype.constructor = Follower;
+
 Follower.prototype.update = function() {
     var distance = this.game.math.distance(this.x, this.y, this.target.x, this.target.y);
 
