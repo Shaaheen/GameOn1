@@ -102,6 +102,9 @@ Follower.prototype.update = function() {
         // Calculate the angle to the target
         var rotation = this.game.math.angleBetween(this.x, this.y, this.target.x, this.target.y);
         this.rotation =  game.physics.arcade.angleToPointer(this);
+        ast = game.add.sprite(200,250,'asteroid');
+        game.physics.arcade.collide(this,ast,Follower.prototype.collisions,null,Follower);
+
 
         // Calculate velocity vector based on rotation and this.MAX_SPEED
         this.body.velocity.x = Math.cos(rotation) * this.MAX_SPEED;
@@ -110,4 +113,8 @@ Follower.prototype.update = function() {
         this.body.velocity.setTo(0, 0);
     }
 };
+
+Follower.prototype.collisions = function(obj1,obj2){
+    game.stage.backgroundColor = '#000000';
+}
 
