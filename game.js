@@ -10,6 +10,7 @@ var Game = {
     preload : function() {
         // Here we load all the needed resources for the level.
         // In our case, that's just two squares - one for the snake body and one for the apple.
+        game.load.audio("catMusic", "./assets/audio/MeowMix.mp3");
         game.load.image('asteroid', './assets/images/a10000.png');
         game.load.image('cat', './assets/images/uglyCat.png');
         game.load.image("background", "./assets/images/space6.jpg");
@@ -26,6 +27,8 @@ var Game = {
         this.generateAsteroids();
         //this.generateCat();
         game.add.text(30, 20, "SCORE", textStyle_Key);
+        music = game.add.audio('catMusic');
+        music.loopFull();
         game.physics.startSystem(Phaser.Physics.ARCADE);
 
         this.game.add.existing(
