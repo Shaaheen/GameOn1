@@ -27,17 +27,18 @@ var Game = {
         game.add.tileSprite(0,0,1200,800,'background');
 
         this.generateAsteroids();
-        game.add.text(30, 20, "SCORE" + score, textStyle_Key);
+        //game.add.text(30, 20, "SCORE" + score, textStyle_Key);
         music = game.add.audio('catMusic');
         music.loopFull();
         game.physics.startSystem(Phaser.Physics.ARCADE);
         cat = new Follower(this.game, this.game.width/2, this.game.height/2, this.game.input);
         this.game.add.existing(cat);
         cat.scale.setTo(0.5,0.5);
-        scoreTextValue = game.add.text(90, 18, score.toString(), textStyle_Value);
+        scoreTextValue = game.add.text(90, 18, "SCORE: " + score.toString(), textStyle_Value);
     },
 
     update :function(){
+        scoreTextValue.text= "SCORE: " + score.toString();
         cat.rotation = game.physics.arcade.angleToPointer(cat);
         game.physics.arcade.overlap(cat, asteroids, Game.collisionHandler, null, this);
         cat.scale.setTo(0.5+scalingFactor,0.5+scalingFactor);
@@ -50,15 +51,22 @@ var Game = {
          */
         //asteroid.kill();
         //FIX THIS
-        if(accumulateSize>2){
-            scalingFactor+=0.3;
-            accumulateSize = 0;
-        }else{
-            accumulateSize++;
+        console.log("Asteroid Size: " + asteroid.s.name);
+        console.log("Cat Size: " + (0.5 + scalingFactor));
+        if ((0.5 + scalingFactor) < asteroid.s.name){
+            asteroid.kill();
         }
-        score+=10;
-        cat.kill();
-
+        else{
+            if(accumulateSize>2){
+                scalingFactor+=0.3;
+                accumulateSize = 0;
+            }
+            else{
+                accumulateSize++;
+            }
+            score+=10;
+            cat.kill();
+        }
     },
 
     generateAsteroids : function () {
@@ -67,6 +75,8 @@ var Game = {
         for(var i = 0; i <  10; i++){
             var s = asteroids.create(0, game.rnd.integerInRange(200, 0), 'asteroid');
             var size = game.rnd.integerInRange(1,10)*0.1;
+            s.name = size;
+            console.log(s.name);
             s.scale.setTo(size,size);
             s.body.velocity.set(game.rnd.integerInRange(-200, 200), game.rnd.integerInRange(-200, 200));
         }
