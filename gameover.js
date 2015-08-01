@@ -6,7 +6,7 @@ var Game_Over = {
     preload : function() {
         // Here we load all the needed resources for the level.
         // In our case, that's just two squares - one for the snake body and one for the apple.
-        game.load.image('gameover', './assets/images/gameover.png');
+        game.load.image('gameover', './assets/images/CatMenu.jpg');
     },
 
     create : function() {
@@ -15,8 +15,8 @@ var Game_Over = {
         this.add.button(0, 0, 'gameover', this.startGame, this);
 
         // Last Score Info.
-        game.add.text(235, 350, "LAST SCORE", { font: "bold 16px sans-serif", fill: "#46c0f9", align: "center"});
-        game.add.text(350, 348, score.toString(), { font: "bold 20px sans-serif", fill: "#fff", align: "center" });
+        game.add.text(430, 350, "LAST SCORE", { font: "bold 25px sans-serif", fill: "#46c0f9", align: "center"});
+        game.add.text(510, 400, score.toString(), { font: "bold 30px sans-serif", fill: "#fff", align: "center" });
 
     },
 
