@@ -1,8 +1,8 @@
 /**
  * Created by user on 2015-07-31.
  */
-var snake, apple, catSize, score, speed, squareSize,
-    updateDelay, direction, new_direction, cat,
+var snake, apple, catSize, score, speed, squareSize,scalingFactor,
+    updateDelay, direction, new_direction, cat, asteroid,
     addNew, cursors, scoreTextValue, speedTextValue, textStyle_Key, textStyle_Value;
 
 var Game = {
@@ -18,27 +18,48 @@ var Game = {
 
     create : function() {
         cat = {};
-
+        scalingFactor = 0;
         catSize = 1;
-        asteroids = [];
+        /*asteroids = game.add.group();
+        asteroids.enableBody = true;
+        asteroids.physicsBodyType = Phaser.Physics.ARCADE;*/
         accumulateSize = 0;
         game.stage.backgroundColor = '#71c5cf';
         game.add.tileSprite(0,0,1000,600,'background');
+        score = 0;
+
         this.generateAsteroids();
         //this.generateCat();
-        game.add.text(30, 20, "SCORE", textStyle_Key);
+
+        game.add.text(30, 20, "SCORE" + score, textStyle_Key);
         music = game.add.audio('catMusic');
         music.loopFull();
         game.physics.startSystem(Phaser.Physics.ARCADE);
-
-        this.game.add.existing(
-            new Follower(this.game, this.game.width/2, this.game.height/2, this.game.input)
-        );
-        //scoreTextValue = game.add.text(90, 18, score.toString(), textStyle_Value);
+        cat = new Follower(this.game, this.game.width/2, this.game.height/2, this.game.input);
+        this.game.add.existing(cat);
+        cat.scale.setTo(0.5,0.5);
+        scoreTextValue = game.add.text(90, 18, score.toString(), textStyle_Value);
     },
 
     update :function(){
         cat.rotation = game.physics.arcade.angleToPointer(cat);
+        game.physics.arcade.overlap(cat, asteroids, Game.collisionHandler, null, this);
+        cat.scale.setTo(0.5+scalingFactor,0.5+scalingFactor);
+    },
+
+    collisionHandler: function(asteroid, cat){
+        console.log("Collision!");
+        //asteroid.kill();
+
+        if(accumulateSize>2){
+            scalingFactor+=0.3;
+            accumulateSize = 0;
+        }else{
+            accumulateSize++;
+        }
+        score+=10;
+        cat.kill();
+
     },
 
     generateCat : function () {
@@ -48,31 +69,40 @@ var Game = {
           posX = game.width/2;
         console.log(posY, posX);
         //add a new catgame.world.x = canvas.width/2;
-        cat = game.add.sprite(posX, posY, 'cat');
-        cat.anchor.setTo(0.5, 0.5);
+        cat = game.add.sprite(posX, posY, 'cat', 2);
+        cat.anchor.setTo(0.5);
+        cat.smoothed = false;
+        game.add.tween(cat.scale).to( { x: 3, y: 3 }, 2000, Phaser.Easing.Linear.None, true, 0, 1000, true);
     },
 
     generateAsteroids : function () {
+
+
         // Make random asteroids initially of the same size in random positions
-
-
-        for(var i = 0; i < 5; i++){
-            var posX = Math.floor(Math.random)*squareSize,
-                posY = Math.floor(Math.random);
-            // Add a new asteroid
-            asteroid = game.add.sprite(posX, posY, 'asteroid');
+        asteroids = game.add.physicsGroup(Phaser.Physics.ARCADE);
+        for(var i = 0; i < game.rnd.integerInRange(2,10); i++){
+            var s = asteroids.create(game.rnd.integerInRange(200, 0), game.rnd.integerInRange(200, 0), 'asteroid');
+            s.scale.setTo((game.rnd.integerInRange(1,10))/10,(game.rnd.integerInRange(1,10))/10);
+            s.body.velocity.set(game.rnd.integerInRange(-200, 200), game.rnd.integerInRange(-200, 200));
         }
+
+        asteroids.setAll('body.collideWorldBounds', true);
+        asteroids.setAll('body.bounce.x', 1);
+        asteroids.setAll('body.bounce.y', 1);
+        asteroids.setAll('body.immovable', true);
+
     }
 
-}
-
-collision
-
-
+    }
 
 // Follower constructor
 var Follower = function(game, x, y, target) {
+
+
     Phaser.Sprite.call(this, game, x, y, 'cat');
+
+    this.game.physics.enable(this, Phaser.Physics.ARCADE);
+
 
     // Save the target that this Follower will follow
     // The target is any object with x and y properties
@@ -81,8 +111,6 @@ var Follower = function(game, x, y, target) {
     // Set the pivot point for this sprite to the center
     this.anchor.setTo(0.5, 0.5);
 
-    // Enable physics on this object
-    this.game.physics.enable(this, Phaser.Physics.ARCADE);
 
     // Define constants that affect motion
     this.MAX_SPEED = 250; // pixels/second
@@ -102,8 +130,6 @@ Follower.prototype.update = function() {
         // Calculate the angle to the target
         var rotation = this.game.math.angleBetween(this.x, this.y, this.target.x, this.target.y);
         this.rotation =  game.physics.arcade.angleToPointer(this);
-        ast = game.add.sprite(200,250,'asteroid');
-        game.physics.arcade.collide(this,ast,Follower.prototype.collisions,null,Follower);
 
 
         // Calculate velocity vector based on rotation and this.MAX_SPEED
@@ -112,9 +138,9 @@ Follower.prototype.update = function() {
     } else {
         this.body.velocity.setTo(0, 0);
     }
+
+    game.physics.arcade.collide(asteroids);
 };
 
-Follower.prototype.collisions = function(obj1,obj2){
-    game.stage.backgroundColor = '#000000';
-}
+
 
