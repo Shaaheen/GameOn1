@@ -97,7 +97,7 @@ Follower.prototype.update = function() {
     if (distance > this.MIN_DISTANCE) {
         // Calculate the angle to the target
         var rotation = this.game.math.angleBetween(this.x, this.y, this.target.x, this.target.y);
-        this.rotation = game.physics.arcade.angleToPointer(this);
+        this.rotation =  game.physics.arcade.angleToPointer(this);
 
         // Calculate velocity vector based on rotation and this.MAX_SPEED
         this.body.velocity.x = Math.cos(rotation) * this.MAX_SPEED;
