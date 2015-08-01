@@ -1,15 +1,16 @@
 /**
- * Created by user on 2015-07-31.
+ * Catgar.io
+ * Created by Carla Wilby and Shaaheen Sacoor
+ * On the 31st July.
  */
-var snake, apple, catSize, score, speed, squareSize,scalingFactor,
-    updateDelay, direction, new_direction, cat, asteroid,
-    addNew, cursors, scoreTextValue, speedTextValue, textStyle_Key, textStyle_Value;
+
+    //Predefined variables
+var catSize, score, speed, scalingFactor, cat, asteroid, scoreTextValue, textStyle_Key, textStyle_Value;
 
 var Game = {
 
     preload : function() {
-        // Here we load all the needed resources for the level.
-        // In our case, that's just two squares - one for the snake body and one for the apple.
+            //Loading imagery and audio for the game from the assets folder
         game.load.audio("catMusic", "./assets/audio/MeowMix.mp3");
         game.load.image('asteroid', './assets/images/a10000.png');
         game.load.image('cat', './assets/images/uglyCat.png');
@@ -17,20 +18,15 @@ var Game = {
     },
 
     create : function() {
-        cat = {};
-        scalingFactor = 0;
-        catSize = 1;
-        /*asteroids = game.add.group();
-        asteroids.enableBody = true;
-        asteroids.physicsBodyType = Phaser.Physics.ARCADE;*/
-        accumulateSize = 0;
-        game.stage.backgroundColor = '#71c5cf';
-        game.add.tileSprite(0,0,1000,600,'background');
-        score = 0;
+        //Initialize variables
+        scalingFactor = 0;      //Decides how much the cat must be scaled up by
+        catSize = 1;            //Determines the current size of the cat
+        accumulateSize = 0;     //Counter to track the amount of asteroids the cat has eaten
+        score = 0;              //Tracks the score of the cat
+        game.stage.backgroundColor = '#000000';
+        game.add.tileSprite(0,0,1200,800,'background');
 
         this.generateAsteroids();
-        //this.generateCat();
-
         game.add.text(30, 20, "SCORE" + score, textStyle_Key);
         music = game.add.audio('catMusic');
         music.loopFull();
@@ -48,9 +44,12 @@ var Game = {
     },
 
     collisionHandler: function(asteroid, cat){
-        console.log("Collision!");
+        /*
+        If a cat is bigger than an asteroid, it can eat the asteroid
+        But if the asteroid is bigger than the cat, it will be destroyed.
+         */
         //asteroid.kill();
-
+        //FIX THIS
         if(accumulateSize>2){
             scalingFactor+=0.3;
             accumulateSize = 0;
@@ -62,67 +61,37 @@ var Game = {
 
     },
 
-    generateCat : function () {
-        // X is between 0 and 585 (39*15)
-        // Y is between 0 and 435 (29*15)
-      var posY = game.height/2,
-          posX = game.width/2;
-        console.log(posY, posX);
-        //add a new catgame.world.x = canvas.width/2;
-        cat = game.add.sprite(posX, posY, 'cat', 2);
-        cat.anchor.setTo(0.5);
-        cat.smoothed = false;
-        game.add.tween(cat.scale).to( { x: 3, y: 3 }, 2000, Phaser.Easing.Linear.None, true, 0, 1000, true);
-    },
-
     generateAsteroids : function () {
-
-
-        // Make random asteroids initially of the same size in random positions
+        // Make random asteroids of different sizes in random positions
         asteroids = game.add.physicsGroup(Phaser.Physics.ARCADE);
         for(var i = 0; i < game.rnd.integerInRange(2,10); i++){
             var s = asteroids.create(game.rnd.integerInRange(200, 0), game.rnd.integerInRange(200, 0), 'asteroid');
-            s.scale.setTo((game.rnd.integerInRange(1,10))/10,(game.rnd.integerInRange(1,10))/10);
+            var size = game.rnd.integerInRange(1,10)*0.1;
+            s.scale.setTo(size,size);
             s.body.velocity.set(game.rnd.integerInRange(-200, 200), game.rnd.integerInRange(-200, 200));
         }
-
         asteroids.setAll('body.collideWorldBounds', true);
         asteroids.setAll('body.bounce.x', 1);
         asteroids.setAll('body.bounce.y', 1);
         asteroids.setAll('body.immovable', true);
-
+    }
     }
 
-    }
-
-// Follower constructor
+// Follower constructor to make the cat follow the cursor
 var Follower = function(game, x, y, target) {
-
-
     Phaser.Sprite.call(this, game, x, y, 'cat');
-
     this.game.physics.enable(this, Phaser.Physics.ARCADE);
-
-
     // Save the target that this Follower will follow
     // The target is any object with x and y properties
     this.target = target;
-
-    // Set the pivot point for this sprite to the center
+    // Set the pivot point for this cat to the center
     this.anchor.setTo(0.5, 0.5);
-
-
-    // Define constants that affect motion
-    this.MAX_SPEED = 250; // pixels/second
-    this.MIN_DISTANCE = 32; // pixels
+    this.MAX_SPEED = 400;
+    this.MIN_DISTANCE = 20;
 };
-
-// Followers are a type of Phaser.Sprite
 Follower.prototype = Object.create(Phaser.Sprite.prototype);
 Follower.prototype.constructor = Follower;
-
 Follower.prototype.update = function() {
-    // Calculate distance to target
     var distance = this.game.math.distance(this.x, this.y, this.target.x, this.target.y);
 
     // If the distance > MIN_DISTANCE then move
@@ -130,15 +99,12 @@ Follower.prototype.update = function() {
         // Calculate the angle to the target
         var rotation = this.game.math.angleBetween(this.x, this.y, this.target.x, this.target.y);
         this.rotation =  game.physics.arcade.angleToPointer(this);
-
-
         // Calculate velocity vector based on rotation and this.MAX_SPEED
         this.body.velocity.x = Math.cos(rotation) * this.MAX_SPEED;
         this.body.velocity.y = Math.sin(rotation) * this.MAX_SPEED;
     } else {
         this.body.velocity.setTo(0, 0);
     }
-
     game.physics.arcade.collide(asteroids);
 };
 
