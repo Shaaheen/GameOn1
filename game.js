@@ -66,6 +66,10 @@ var Game = {
 
 }
 
+collision
+
+
+
 // Follower constructor
 var Follower = function(game, x, y, target) {
     Phaser.Sprite.call(this, game, x, y, 'cat');
